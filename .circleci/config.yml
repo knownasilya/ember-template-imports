@@ -41,6 +41,5 @@ workflows:
     jobs:
     - test
     - release:
-        context: frontend-deploy
         requires:
         - test
