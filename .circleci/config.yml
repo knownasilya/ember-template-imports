@@ -30,8 +30,17 @@ jobs:
     working_directory: ~/repo
     steps:
     - checkout
+    - restore_cache:
+        keys:
+        - v1-dependencies-{{ checksum "package.json" }}
+        - v1-dependencies-
     - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/.npmrc
     - run: yarn config set registry https://registry.npmjs.org/
+    - run: yarn install
+    - save_cache:
+        paths:
+          - node_modules
+        key: v1-dependencies-{{ checksum "package.json" }}
     - run: yarn semantic-release
 
 workflows:
