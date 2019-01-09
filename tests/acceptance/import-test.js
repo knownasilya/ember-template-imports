@@ -1,5 +1,5 @@
 import { module, test } from 'qunit';
-import { visit, find } from '@ember/test-helpers';
+import { visit, find, findAll } from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
 
 module('Acceptance | import', function(hooks) {
@@ -9,5 +9,10 @@ module('Acceptance | import', function(hooks) {
     await visit('/');
     assert.equal(find('.global-button').innerText, "I'm a globally referenced button");
     assert.equal(find('.local-button').innerText, "I'm a locally referenced button");
+    assert.equal(find('[data-test-name="dirtyNamedGlobal"]').innerText, 'ember-template-component-import: Warning! "dirtyNamedGlobal" is not allowed as Variable name for Template import');
+    assert.equal(find('[data-test-name="dirtyNamedLocal"]').innerText, 'ember-template-component-import: Warning! "dirtyNamedLocal" is not allowed as Variable name for Template import');
+    assert.equal(findAll('[data-test-global-warn]').length, 2);
+    assert.equal(findAll('.global-button').length, 2);
+    assert.equal(findAll('.local-button').length, 2);
   });
 });
