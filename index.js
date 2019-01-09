@@ -8,6 +8,15 @@ const md5Hex = require('md5-hex');
 
 const IMPORT_PATTERN = /\{\{\s*import (\w+) from ['"]([^'"]+)['"]\s*\}\}/gi;
 
+function isValidVariableName(name) {
+  if (!(/^[A-Za-z]+$/.test(name))) {
+    return false;
+  }
+  if (name.charAt(0).toUpperCase() !== name.charAt(0)) {
+    return false;
+  }
+  return true;
+}
 class TemplateImportProcessor extends BroccoliFilter {
 
   constructor(inputNode, options = {}) {
@@ -45,12 +54,16 @@ class TemplateImportProcessor extends BroccoliFilter {
         importPath = path.resolve(relativePath, '..', importPath);
         importPath = path.relative(this.options.root, importPath);
       }
-      imports.push({ localName, importPath });
+      imports.push({ localName, importPath, isLocalNameValid: isValidVariableName(localName) });
       return '';
     });
 
-    let header = imports.map(({ importPath, localName }) => {
-      return `{{#let (component '${ importPath }') as |${ localName }|}}`;
+    let header = imports.map(({ importPath, localName, isLocalNameValid }) => {
+      const warn = isLocalNameValid ? '' : `
+        {{log 'Warning! ${localName} is not allowed as Variable name for Template import' }}
+        {{log 'Allowed import variable names - CamelCased strings, like: FooBar, TomDale'}}
+      `;
+      return `${warn}{{#let (component '${ importPath }') as |${ localName }|}}`;
     }).join('');
     let footer = imports.map(() => `{{/let}}`).join('');
 
