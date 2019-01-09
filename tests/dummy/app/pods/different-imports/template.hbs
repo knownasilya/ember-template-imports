@@ -1,0 +1,31 @@
+// spaced
+{{ import Button from "ui/button" }}
+// tabbed
+{{  import    LocalButton from    "application/button"    }}
+// mixed
+{{  import            ButtonButton           from          "ui/button"  }}
+// newlined
+{{import 
+  LocalButtonLocalButton 
+  from
+  "application/button"
+}}
+// newlined mixed
+{{import 
+  ButtonButtonButton             
+  from           
+  "ui/button"   
+}}
+// newlined mixed with tabs and spaces
+{{  import 
+  LocalButtonLocalButtonLocalButton    
+  from           
+  "application/button"                  
+}}
+
+<Button>b1</Button>
+<LocalButton>b1</LocalButton>
+<ButtonButton>b3</ButtonButton>
+<LocalButtonLocalButton>b4</LocalButtonLocalButton>
+<LocalButtonLocalButtonLocalButton>b5</LocalButtonLocalButtonLocalButton>
+<ButtonButtonButton>b6</ButtonButtonButton>
