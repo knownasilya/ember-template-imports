@@ -62,13 +62,15 @@ class TemplateImportProcessor extends BroccoliFilter {
       const warnPrefix = 'ember-template-component-import: ';
       const abstractWarn = `${warnPrefix} Allowed import variable names - CamelCased strings, like: FooBar, TomDale`;
       const componentWarn =  `${warnPrefix}Warning! "${localName}" is not allowed as Variable name for Template import`;
-      this._console.log(componentWarn);
       const warn = isLocalNameValid ? '' : `
         {{log '${componentWarn}'}}
         {{log '${abstractWarn}'}}
         <pre data-test-name="${localName}">${componentWarn}</pre>
         <pre data-test-global-warn="${localName}">${abstractWarn}</pre>
       `;
+      if (!isLocalNameValid) {
+        this._console.log(componentWarn);
+      }
       return `${warn}{{#let (component '${ importPath }') as |${ localName }|}}`;
     }).join('');
     let footer = imports.map(() => `{{/let}}`).join('');
