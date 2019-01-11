@@ -11,8 +11,8 @@ module('Acceptance | import', function(hooks) {
     assert.equal(find('.local-button').innerText, "I'm a locally referenced button");
     assert.equal(find('[data-test-name="incorrectlyCamelCasedAbsoluteImport"]').innerText, 'ember-template-component-import: Warning! "incorrectlyCamelCasedAbsoluteImport" is not allowed as Variable name for Template import');
     assert.equal(find('[data-test-name="incorrectlyCamelCasedRelativeImport"]').innerText, 'ember-template-component-import: Warning! "incorrectlyCamelCasedRelativeImport" is not allowed as Variable name for Template import');
-    assert.equal(find('[data-test-name="Pseudo_Valid_Global"]').innerText, 'ember-template-component-import: Warning! "Pseudo_Valid_Global" is not allowed as Variable name for Template import');
-    assert.equal(find('[data-test-name="Pseudo_Valid_Local"]').innerText, 'ember-template-component-import: Warning! "Pseudo_Valid_Local" is not allowed as Variable name for Template import');
+    assert.equal(find('[data-test-name="Incorrectly_Snake_Cased_Absolute_Import"]').innerText, 'ember-template-component-import: Warning! "Incorrectly_Snake_Cased_Absolute_Import" is not allowed as Variable name for Template import');
+    assert.equal(find('[data-test-name="Incorrectly_Snake_Cased_Relative_Import"]').innerText, 'ember-template-component-import: Warning! "Incorrectly_Snake_Cased_Relative_Import" is not allowed as Variable name for Template import');
     assert.equal(findAll('[data-test-global-warn]').length, 4);
     assert.equal(findAll('.global-button').length, 3);
     assert.equal(findAll('.local-button').length, 3);
