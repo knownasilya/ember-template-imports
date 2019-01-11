@@ -27,6 +27,6 @@ module('Acceptance | import', function(hooks) {
 
     assert.equal(findAll('[data-test-global-warn]').length, 4);
     assert.equal(findAll('.global-button').length, 3);
-    assert.equal(findAll('.local-button').length, 3);
+    assert.equal(findAll('.local-button').length, 4);
   });
 });
