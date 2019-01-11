@@ -9,10 +9,22 @@ module('Acceptance | import', function(hooks) {
     await visit('/');
     assert.equal(find('.global-button').innerText, "I'm a globally referenced button");
     assert.equal(find('.local-button').innerText, "I'm a locally referenced button");
-    assert.equal(find('[data-test-name="incorrectlyCamelCasedAbsoluteImport"]').innerText, 'ember-template-component-import: Warning! "incorrectlyCamelCasedAbsoluteImport" is not allowed as Variable name for Template import');
-    assert.equal(find('[data-test-name="incorrectlyCamelCasedRelativeImport"]').innerText, 'ember-template-component-import: Warning! "incorrectlyCamelCasedRelativeImport" is not allowed as Variable name for Template import');
-    assert.equal(find('[data-test-name="Incorrectly_Snake_Cased_Absolute_Import"]').innerText, 'ember-template-component-import: Warning! "Incorrectly_Snake_Cased_Absolute_Import" is not allowed as Variable name for Template import');
-    assert.equal(find('[data-test-name="Incorrectly_Snake_Cased_Relative_Import"]').innerText, 'ember-template-component-import: Warning! "Incorrectly_Snake_Cased_Relative_Import" is not allowed as Variable name for Template import');
+    const incorrectlyCamelCasedAbsoluteImportText = find('[data-test-name="incorrectlyCamelCasedAbsoluteImport"]').innerText;
+    const incorrectlyCamelCasedRelativeImportText = find('[data-test-name="incorrectlyCamelCasedRelativeImport"]').innerText;
+    const Incorrectly_Snake_Cased_Absolute_ImportText = find('[data-test-name="Incorrectly_Snake_Cased_Absolute_Import"]').innerText;
+    const Incorrectly_Snake_Cased_Relative_ImportText = find('[data-test-name="Incorrectly_Snake_Cased_Relative_Import"]').innerText;
+
+    assert.equal(incorrectlyCamelCasedAbsoluteImportText.includes('dummy/pods/application/template.hbs'), true);
+    assert.equal(incorrectlyCamelCasedAbsoluteImportText.includes('"incorrectlyCamelCasedAbsoluteImport"'), true);
+    assert.equal(incorrectlyCamelCasedRelativeImportText.includes('dummy/pods/application/template.hbs'), true);
+    assert.equal(incorrectlyCamelCasedRelativeImportText.includes('"incorrectlyCamelCasedRelativeImport"'), true);
+
+    
+    assert.equal(Incorrectly_Snake_Cased_Absolute_ImportText.includes('dummy/pods/application/template.hbs'), true);
+    assert.equal(Incorrectly_Snake_Cased_Absolute_ImportText.includes('"Incorrectly_Snake_Cased_Absolute_Import"'), true);
+    assert.equal(Incorrectly_Snake_Cased_Relative_ImportText.includes('dummy/pods/application/template.hbs'), true);
+    assert.equal(Incorrectly_Snake_Cased_Relative_ImportText.includes('"Incorrectly_Snake_Cased_Relative_Import"'), true);
+
     assert.equal(findAll('[data-test-global-warn]').length, 4);
     assert.equal(findAll('.global-button').length, 3);
     assert.equal(findAll('.local-button').length, 3);
