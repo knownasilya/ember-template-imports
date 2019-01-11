@@ -1,13 +1,13 @@
 {{import Button from "ui/button"}}
 {{import LocalButton from "./button"}}
-{{import dirtyNamedGlobal from "ui/button"}}
-{{import dirtyNamedLocal from "./button"}}
+{{import incorrectlyCamelCasedAbsoluteImport from "ui/button"}}
+{{import incorrectlyCamelCasedRelativeImport from "./button"}}
 {{import Pseudo_Valid_Global from "ui/button"}}
 {{import Pseudo_Valid_Local from "./button"}}
 
 <Button>I'm a globally referenced button</Button>
 <LocalButton>I'm a locally referenced button</LocalButton>
-<dirtyNamedGlobal>I'm a dirty named global button</dirtyNamedGlobal>
-<dirtyNamedLocal>I'm a dirty named global button</dirtyNamedLocal>
+<incorrectlyCamelCasedAbsoluteImport>I'm a dirty named global button</incorrectlyCamelCasedAbsoluteImport>
+<incorrectlyCamelCasedRelativeImport>I'm a dirty named global button</incorrectlyCamelCasedRelativeImport>
 <Pseudo_Valid_Global>I'm a underscored global button</Pseudo_Valid_Global>
 <Pseudo_Valid_Local>I'm a underscored local button</Pseudo_Valid_Local>
