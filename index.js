@@ -6,10 +6,10 @@ const path = require('path');
 const BroccoliFilter = require('broccoli-persistent-filter');
 const md5Hex = require('md5-hex');
 
-const IMPORT_PATTERN = /\{\{\s*import\s+(\w+)\s+from\s+['"]([^'"]+)['"]\s*\}\}/gi;
+const IMPORT_PATTERN = /\{\{\s*import\s+([^\s]+)\s+from\s+['"]([^'"]+)['"]\s*\}\}/gi;
 
 function isValidVariableName(name) {
-  if (!(/^[A-Za-z]+$/.test(name))) {
+  if (!(/^[A-Za-z0-9]+$/.test(name))) {
     return false;
   }
   if (name.charAt(0).toUpperCase() !== name.charAt(0)) {
