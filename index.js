@@ -6,8 +6,17 @@ const path = require('path');
 const BroccoliFilter = require('broccoli-persistent-filter');
 const md5Hex = require('md5-hex');
 
-const IMPORT_PATTERN = /\{\{\s*import (\w+) from ['"]([^'"]+)['"]\s*\}\}/gi;
+const IMPORT_PATTERN = /\{\{\s*import\s+([^\s]+)\s+from\s+['"]([^'"]+)['"]\s*\}\}/gi;
 
+function isValidVariableName(name) {
+  if (!(/^[A-Za-z0-9]+$/.test(name))) {
+    return false;
+  }
+  if (name.charAt(0).toUpperCase() !== name.charAt(0)) {
+    return false;
+  }
+  return true;
+}
 class TemplateImportProcessor extends BroccoliFilter {
 
   constructor(inputNode, options = {}) {
@@ -42,15 +51,32 @@ class TemplateImportProcessor extends BroccoliFilter {
     let imports = [];
     let rewrittenContents = contents.replace(IMPORT_PATTERN, (_, localName, importPath) => {
       if (importPath.startsWith('.')) {
-        importPath = path.resolve(relativePath, '..', importPath);
-        importPath = path.relative(this.options.root, importPath);
+        importPath = path.resolve(relativePath, '..', importPath).split(path.sep).join('/');
+        importPath = path.relative(this.options.root, importPath).split(path.sep).join('/');
       }
-      imports.push({ localName, importPath });
+      imports.push({ localName, importPath, isLocalNameValid: isValidVariableName(localName) });
       return '';
     });
 
-    let header = imports.map(({ importPath, localName }) => {
-      return `{{#let (component '${ importPath }') as |${ localName }|}}`;
+    let header = imports.map(({ importPath, localName, isLocalNameValid }) => {
+      const warnPrefix = 'ember-template-component-import: ';
+      const abstractWarn = `${warnPrefix} Allowed import variable names - CamelCased strings, like: FooBar, TomDale`;
+      const componentWarn =  `
+        ${warnPrefix}Warning!
+        in file: "${relativePath}" 
+        subject: "${localName}" is not allowed as Variable name for Template import.`;
+      const warn = isLocalNameValid ? '' : `
+        <pre data-test-name="${localName}">${componentWarn}</pre>
+        <pre data-test-global-warn="${localName}">${abstractWarn}</pre>
+      `;
+      if (!isLocalNameValid) {
+        this._console.log(componentWarn);
+        if (relativePath !== 'dummy/pods/application/template.hbs') {
+          // don't throw on 'dummy/pods/application/template.hbs' (test template)
+          throw new Error(componentWarn);
+        }
+      }
+      return `${warn}{{#let (component '${ importPath }') as |${ localName }|}}`;
     }).join('');
     let footer = imports.map(() => `{{/let}}`).join('');
 

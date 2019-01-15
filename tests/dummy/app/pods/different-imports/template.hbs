@@ -1,0 +1,31 @@
+// spaced
+{{ import Button from "ui/button" }}
+// tabbed
+{{  import    SecondButton from    "application/button"    }}
+// mixed
+{{  import            ButtonButton           from          "ui/button"  }}
+// newlined
+{{import 
+  SecondButtonSecondButton 
+  from
+  "application/button"
+}}
+// newlined mixed
+{{import 
+  ButtonButtonButton             
+  from           
+  "ui/button"   
+}}
+// newlined mixed with tabs and spaces
+{{  import 
+  SecondButtonSecondButtonSecondButton    
+  from           
+  "application/button"                  
+}}
+
+<Button>b1</Button>
+<SecondButton>b1</SecondButton>
+<ButtonButton>b3</ButtonButton>
+<SecondButtonSecondButton>b4</SecondButtonSecondButton>
+<SecondButtonSecondButtonSecondButton>b5</SecondButtonSecondButtonSecondButton>
+<ButtonButtonButton>b6</ButtonButtonButton>

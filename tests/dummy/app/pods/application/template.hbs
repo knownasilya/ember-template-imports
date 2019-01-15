@@ -1,5 +1,15 @@
 {{import Button from "ui/button"}}
-{{import LocalButton from "./button"}}
+{{import SecondButton from "./button"}}
+{{import ButtonWithNumber5 from "./button"}};
+{{import incorrectlyCamelCasedAbsoluteImport from "ui/button"}}
+{{import incorrectlyCamelCasedRelativeImport from "./button"}}
+{{import Incorrectly_Snake_Cased_Absolute_Import from "ui/button"}}
+{{import Incorrectly_Snake_Cased_Relative_Import from "./button"}}
 
 <Button>I'm a globally referenced button</Button>
-<LocalButton>I'm a locally referenced button</LocalButton>
+<SecondButton>I'm a locally referenced button</SecondButton>
+<ButtonWithNumber5>I'm ButtonWithNumber5InComponentName</ButtonWithNumber5>
+<incorrectlyCamelCasedAbsoluteImport>I'm a dirty named global button</incorrectlyCamelCasedAbsoluteImport>
+<incorrectlyCamelCasedRelativeImport>I'm a dirty named global button</incorrectlyCamelCasedRelativeImport>
+<Incorrectly_Snake_Cased_Absolute_Import>I'm a underscored global button</Incorrectly_Snake_Cased_Absolute_Import>
+<Incorrectly_Snake_Cased_Relative_Import>I'm a underscored local button</Incorrectly_Snake_Cased_Relative_Import>
