@@ -2,6 +2,7 @@
 
 /* eslint-env node */
 
+const assert = require('assert');
 const path = require('path');
 const BroccoliFilter = require('broccoli-persistent-filter');
 const md5Hex = require('md5-hex');
@@ -63,7 +64,7 @@ class TemplateImportProcessor extends BroccoliFilter {
       const abstractWarn = `${warnPrefix} Allowed import variable names - CamelCased strings, like: FooBar, TomDale`;
       const componentWarn =  `
         ${warnPrefix}Warning!
-        in file: "${relativePath}" 
+        in file: "${relativePath}"
         subject: "${localName}" is not allowed as Variable name for Template import.`;
       const warn = isLocalNameValid ? '' : `
         <pre data-test-name="${localName}">${componentWarn}</pre>
@@ -90,11 +91,18 @@ module.exports = {
   name: require('./package').name,
 
   setupPreprocessorRegistry(type, registry) {
+    const podModulePrefix = this.project.config('development').podModulePrefix;
+
+    assert.notStrictEqual(
+      podModulePrefix,
+      undefined,
+      `${this.name}: 'podModulePrefix' has not been defined in config/environment.js`
+    );
     registry.add('template', {
       name: 'ember-template-component-import',
       ext: 'hbs',
       toTree: (tree) => {
-        let componentsRoot = path.join(this.project.root, this.project.config('development').podModulePrefix);
+        let componentsRoot = path.join(this.project.root, podModulePrefix);
         tree = new TemplateImportProcessor(tree, { root: componentsRoot });
         return tree;
       }
