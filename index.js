@@ -91,7 +91,7 @@ module.exports = {
   name: require('./package').name,
 
   setupPreprocessorRegistry(type, registry) {
-    const podModulePrefix = this.project.config('development').podModulePrefix;
+    const podModulePrefix = this.project.config().podModulePrefix;
 
     assert.notStrictEqual(
       podModulePrefix,
