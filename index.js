@@ -7,8 +7,14 @@ const path = require('path');
 const BroccoliFilter = require('broccoli-persistent-filter');
 const md5Hex = require('md5-hex');
 
-const usingStylesImport = !!require.resolve('ember-template-styles-import');
+const usingStylesImport = false;
 const IMPORT_PATTERN = /\{\{\s*import\s+([^\s]+)\s+from\s+['"]([^'"]+)['"]\s*\}\}/gi;
+
+try {
+  usingStylesImport = !!require.resolve('ember-template-styles-import');
+} catch(e) {
+  // noop
+}
 
 function isValidVariableName(name) {
   if (!(/^[A-Za-z0-9]+$/.test(name))) {
