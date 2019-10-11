@@ -7,7 +7,14 @@ const path = require('path');
 const BroccoliFilter = require('broccoli-persistent-filter');
 const md5Hex = require('md5-hex');
 
+const usingStylesImport = false;
 const IMPORT_PATTERN = /\{\{\s*import\s+([^\s]+)\s+from\s+['"]([^'"]+)['"]\s*\}\}/gi;
+
+try {
+  usingStylesImport = !!require.resolve('ember-template-styles-import');
+} catch(e) {
+  // noop
+}
 
 function isValidVariableName(name) {
   if (!(/^[A-Za-z0-9]+$/.test(name))) {
@@ -51,6 +58,9 @@ class TemplateImportProcessor extends BroccoliFilter {
   processString(contents, relativePath) {
     let imports = [];
     let rewrittenContents = contents.replace(IMPORT_PATTERN, (_, localName, importPath) => {
+      if (importPath.endsWith('styles.scoped.scss') && usingStylesImport) {
+        return _;
+      }
       if (importPath.startsWith('.')) {
         importPath = path.resolve(relativePath, '..', importPath).split(path.sep).join('/');
         importPath = path.relative(this.options.root, importPath).split(path.sep).join('/');
