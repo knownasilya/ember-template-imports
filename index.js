@@ -2,7 +2,6 @@
 
 /* eslint-env node */
 
-const path = require("path");
 const BroccoliFilter = require("broccoli-persistent-filter");
 const md5Hex = require("md5-hex");
 const { transformImports, createImportWarning } = require("./lib/utils");
