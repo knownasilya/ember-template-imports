@@ -2,8 +2,10 @@
 
 /* eslint-env node */
 
-const BroccoliFilter = require("broccoli-persistent-filter");
-const md5Hex = require("md5-hex");
+const assert = require('assert');
+const path = require('path');
+const BroccoliFilter = require('broccoli-persistent-filter');
+const md5Hex = require('md5-hex');
 const { transformImports, createImportWarning } = require("./lib/utils");
 const {
   transformOctaneImports,
@@ -12,11 +14,6 @@ const {
 } = require("./lib/mu-utils");
 
 let isModuleUnification;
-const assert = require('assert');
-const path = require('path');
-const BroccoliFilter = require('broccoli-persistent-filter');
-const md5Hex = require('md5-hex');
-
 const IMPORT_PATTERN = /\{\{\s*import\s+([^\s]+)\s+from\s+['"]([^'"]+)['"]\s*\}\}/gi;
 
 function isValidVariableName(name) {
