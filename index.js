@@ -67,7 +67,8 @@ class TemplateImportProcessor extends BroccoliFilter {
         const warn = createImportWarning(
           relativePath,
           localName,
-          isLocalNameValid
+          isLocalNameValid,
+          this._console
         );
         let componentName = "";
         if (isModuleUnification) {
@@ -79,36 +80,28 @@ class TemplateImportProcessor extends BroccoliFilter {
       })
       .join("");
     let footer = imports.map(() => `{{/let}}`).join("");
-    let rewrittenContents = contents.replace(IMPORT_PATTERN, (_, localName, importPath) => {
-      if (importPath.startsWith('.')) {
-        importPath = path.resolve(relativePath, '..', importPath).split(path.sep).join('/');
-        importPath = path.relative(this.options.root, importPath).split(path.sep).join('/');
-      }
-      imports.push({ localName, importPath, isLocalNameValid: isValidVariableName(localName) });
-      return '';
-    });
 
-    let header = imports.map(({ importPath, localName, isLocalNameValid }) => {
-      const warnPrefix = 'ember-template-component-import: ';
-      const abstractWarn = `${warnPrefix} Allowed import variable names - CamelCased strings, like: FooBar, TomDale`;
-      const componentWarn =  `
-        ${warnPrefix}Warning!
-        in file: "${relativePath}"
-        subject: "${localName}" is not allowed as Variable name for Template import.`;
-      const warn = isLocalNameValid ? '' : `
-        <pre data-test-name="${localName}">${componentWarn}</pre>
-        <pre data-test-global-warn="${localName}">${abstractWarn}</pre>
-      `;
-      if (!isLocalNameValid) {
-        this._console.log(componentWarn);
-        if (relativePath !== 'dummy/pods/application/template.hbs') {
-          // don't throw on 'dummy/pods/application/template.hbs' (test template)
-          throw new Error(componentWarn);
-        }
-      }
-      return `${warn}{{#let (component '${ importPath }') as |${ localName }|}}`;
-    }).join('');
-    let footer = imports.map(() => `{{/let}}`).join('');
+    // let header = imports.map(({ importPath, localName, isLocalNameValid }) => {
+    //   const warnPrefix = 'ember-template-component-import: ';
+    //   const abstractWarn = `${warnPrefix} Allowed import variable names - CamelCased strings, like: FooBar, TomDale`;
+    //   const componentWarn =  `
+    //     ${warnPrefix}Warning!
+    //     in file: "${relativePath}"
+    //     subject: "${localName}" is not allowed as Variable name for Template import.`;
+    //   const warn = isLocalNameValid ? '' : `
+    //     <pre data-test-name="${localName}">${componentWarn}</pre>
+    //     <pre data-test-global-warn="${localName}">${abstractWarn}</pre>
+    //   `;
+    //   if (!isLocalNameValid) {
+    //     this._console.log(componentWarn);
+    //     if (relativePath !== 'dummy/pods/application/template.hbs') {
+    //       // don't throw on 'dummy/pods/application/template.hbs' (test template)
+    //       throw new Error(componentWarn);
+    //     }
+    //   }
+    //   return `${warn}{{#let (component '${ importPath }') as |${ localName }|}}`;
+    // }).join('');
+    // let footer = imports.map(() => `{{/let}}`).join('');
     let result = header + rewrittenContents + footer;
     return result;
   }
@@ -127,30 +120,20 @@ module.exports = {
       !!this.project.isModuleUnification && this.project.isModuleUnification();
   },
   setupPreprocessorRegistry(type, registry) {
-    const context = this;
     // this is called before init, so, we need to check podModulePrefix later (in toTree)
-    registry.add("template", {
-      name: "ember-template-component-import",
-      ext: "hbs",
-      toTree: tree => {
-        let componentsRoot = null;
-        if (!isModuleUnification) {
-          const projectConfig = this.project.config();
-          const podModulePrefix = projectConfig.podModulePrefix;
-  
-          // by default `ember g component foo-bar --pod`
-          // will create app/components/foo-bar/{component.js,template.hbs}
-          // so, we can handle this case and just fallback to 'app/components'
-         
-          if (podModulePrefix === undefined) {
-            componentsRoot = path.join(this.project.root, "app", "components");
-          } else {
-            componentsRoot = path.join(this.project.root, podModulePrefix);
-          }
-        } else {
-          componentsRoot = path.join(this.project.root);
-        }
-    const podModulePrefix = this.project.config().podModulePrefix;
+    let componentsRoot = null;
+    const projectConfig = this.project.config();
+    const podModulePrefix = projectConfig.podModulePrefix;
+
+    // by default `ember g component foo-bar --pod`
+    // will create app/components/foo-bar/{component.js,template.hbs}
+    // so, we can handle this case and just fallback to 'app/components'
+    
+    if (podModulePrefix === undefined) {
+      componentsRoot = path.join(this.project.root, 'app', 'components');
+    } else {
+      componentsRoot = path.join(this.project.root, podModulePrefix);
+    }
 
     assert.notStrictEqual(
       podModulePrefix,
@@ -161,7 +144,6 @@ module.exports = {
       name: 'ember-template-component-import',
       ext: 'hbs',
       toTree: (tree) => {
-        let componentsRoot = path.join(this.project.root, podModulePrefix);
         tree = new TemplateImportProcessor(tree, { root: componentsRoot });
         return tree;
       }
