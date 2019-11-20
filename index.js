@@ -6,25 +6,12 @@ const assert = require('assert');
 const path = require('path');
 const BroccoliFilter = require('broccoli-persistent-filter');
 const md5Hex = require('md5-hex');
-const { transformImports, createImportWarning } = require("./lib/utils");
+const { transformImports, createImportWarning } = require('./lib/utils');
 const {
   transformOctaneImports,
-  hasOctaneImports,
-  getLetedComponentName
-} = require("./lib/mu-utils");
+  hasOctaneImports
+} = require('./lib/octane-utils');
 
-let isModuleUnification;
-const IMPORT_PATTERN = /\{\{\s*import\s+([^\s]+)\s+from\s+['"]([^'"]+)['"]\s*\}\}/gi;
-
-function isValidVariableName(name) {
-  if (!(/^[A-Za-z0-9]+$/.test(name))) {
-    return false;
-  }
-  if (name.charAt(0).toUpperCase() !== name.charAt(0)) {
-    return false;
-  }
-  return true;
-}
 class TemplateImportProcessor extends BroccoliFilter {
   constructor(inputNode, options = {}) {
     if (!options.hasOwnProperty("persist")) {
@@ -70,12 +57,8 @@ class TemplateImportProcessor extends BroccoliFilter {
           isLocalNameValid,
           this._console
         );
-        let componentName = "";
-        if (isModuleUnification) {
-          componentName = getLetedComponentName(importPath, relativePath);
-        } else {
-          componentName = `(component '${importPath}')`;
-        }
+        let componentName = `(component '${importPath}')`;
+        
         return `${warn}{{#let ${componentName} as |${localName}|}}`;
       })
       .join("");
@@ -109,16 +92,7 @@ class TemplateImportProcessor extends BroccoliFilter {
 
 module.exports = {
   name: require("./package").name,
-  init() {
-    this._super.init.apply(this, arguments);
-    if (process.env.EMBER_CLI_MODULE_UNIFICATION) {
-      this.project.isModuleUnification = function() {
-        return true;
-      };
-    }
-    isModuleUnification =
-      !!this.project.isModuleUnification && this.project.isModuleUnification();
-  },
+
   setupPreprocessorRegistry(type, registry) {
     // this is called before init, so, we need to check podModulePrefix later (in toTree)
     let componentsRoot = null;
