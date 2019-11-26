@@ -11,6 +11,10 @@ In other words, it's **pods + angle bracket component = goodness**.
 * No hyphens needed!
 * Relative imports!
 
+Can be used together with
+* [helper imports](https://github.com/patricklx/ember-template-helper-imports)
+* [styles import](https://github.com/davewasmer/ember-template-styles-import)
+
 Installation
 ------------------------------------------------------------------------------
 
