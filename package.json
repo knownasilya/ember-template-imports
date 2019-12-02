@@ -81,9 +81,7 @@
     "entry": "./lib/langserver.js",
     "version": 1,
     "capabilities": {
-      "completionProvider": {
-        "resolveProvider" :true
-      }
+      "completionProvider": true
     }
   }
 }
