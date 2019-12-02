@@ -69,6 +69,13 @@ import { BasicDropdown as SameDropdown } from 'ember-basic-dropdown/components';
 <SameDropdown />
 ```
 
+Editor Integration
+------------------------------------------------------------------------------
+
+Currently works with **VSCode** combined with the [Unstable Ember Language Server](unstable-ls).
+
+This provides auto completion of imported components.
+
 
 Motivation
 ------------------------------------------------------------------------------
@@ -105,3 +112,5 @@ License
 ------------------------------------------------------------------------------
 
 This project is licensed under the [MIT License](LICENSE.md).
+
+unstable-ls: https://marketplace.visualstudio.com/items?itemName=lifeart.vscode-ember-unstable
