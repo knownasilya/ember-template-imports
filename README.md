@@ -77,10 +77,15 @@ import { BasicDropdown as SameDropdown } from 'ember-basic-dropdown/components';
 Editor Integration
 ------------------------------------------------------------------------------
 
+Editor integration currently provides auto completion of imported components.
+
+### VSCode
+
 Currently works with **VSCode** combined with the [Unstable Ember Language Server](unstable-ls).
 
-This provides auto completion of imported components.
+### (Neo)Vim
 
+Possible by using https://github.com/NullVoxPopuli/coc-ember
 
 
 Motivation
