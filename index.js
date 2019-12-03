@@ -12,6 +12,14 @@ const {
   hasOctaneImports
 } = require('./lib/octane-utils');
 
+let usingStylesImport = false;
+
+try {
+  usingStylesImport = !!require.resolve('ember-template-styles-import');
+} catch(e) {
+  // noop
+}
+
 class TemplateImportProcessor extends BroccoliFilter {
   constructor(inputNode, options = {}) {
     if (!options.hasOwnProperty("persist")) {
@@ -46,7 +54,8 @@ class TemplateImportProcessor extends BroccoliFilter {
     const { imports, rewrittenContents } = transformImports(
       contents,
       relativePath,
-      this.options.root
+      this.options.root,
+      usingStylesImport
     );
 
     let header = imports
