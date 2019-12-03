@@ -80,7 +80,6 @@
   "ember-language-server": {
     "entry": "./lib/langserver.js",
     "version": 1,
-    "debug" : true,
     "capabilities": {
       "completionProvider": true
     }
