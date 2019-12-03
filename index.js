@@ -12,6 +12,14 @@ const {
   hasOctaneImports
 } = require('./lib/octane-utils');
 
+let usingStylesImport = false;
+
+try {
+  usingStylesImport = !!require.resolve('ember-template-styles-import');
+} catch(e) {
+  // noop
+}
+
 class TemplateImportProcessor extends BroccoliFilter {
   constructor(inputNode, options = {}) {
     if (!options.hasOwnProperty("persist")) {
@@ -46,7 +54,8 @@ class TemplateImportProcessor extends BroccoliFilter {
     const { imports, rewrittenContents } = transformImports(
       contents,
       relativePath,
-      this.options.root
+      this.options.root,
+      usingStylesImport
     );
 
     let header = imports
@@ -63,28 +72,6 @@ class TemplateImportProcessor extends BroccoliFilter {
       })
       .join("");
     let footer = imports.map(() => `{{/let}}`).join("");
-
-    // let header = imports.map(({ importPath, localName, isLocalNameValid }) => {
-    //   const warnPrefix = 'ember-template-component-import: ';
-    //   const abstractWarn = `${warnPrefix} Allowed import variable names - CamelCased strings, like: FooBar, TomDale`;
-    //   const componentWarn =  `
-    //     ${warnPrefix}Warning!
-    //     in file: "${relativePath}"
-    //     subject: "${localName}" is not allowed as Variable name for Template import.`;
-    //   const warn = isLocalNameValid ? '' : `
-    //     <pre data-test-name="${localName}">${componentWarn}</pre>
-    //     <pre data-test-global-warn="${localName}">${abstractWarn}</pre>
-    //   `;
-    //   if (!isLocalNameValid) {
-    //     this._console.log(componentWarn);
-    //     if (relativePath !== 'dummy/pods/application/template.hbs') {
-    //       // don't throw on 'dummy/pods/application/template.hbs' (test template)
-    //       throw new Error(componentWarn);
-    //     }
-    //   }
-    //   return `${warn}{{#let (component '${ importPath }') as |${ localName }|}}`;
-    // }).join('');
-    // let footer = imports.map(() => `{{/let}}`).join('');
     let result = header + rewrittenContents + footer;
     return result;
   }
