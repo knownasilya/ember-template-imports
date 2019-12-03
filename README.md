@@ -48,7 +48,31 @@ We also do a bit of path magic at build time to let you use relative imports!
 {{import SpecialButton from './super-special-button-used-only-in-this-route'}}
 
 <SpecialButton>I'm so special!</SpecialButton>
+
 ```
+
+### Octane imports style
+
+```hbs
+import BasicDropdown from 'ember-basic-dropdown/components/basic-dropdown';
+import { BasicDropdown as SameDropdown } from 'ember-basic-dropdown/components';
+
+--- hbs ---
+
+<BasicDropdown />
+<SameDropdown />
+```
+
+### Classic imports style
+
+```hbs
+{{import BasicDropdown from 'ember-basic-dropdown/components/basic-dropdown'}}
+{{import SameDropdown from 'ember-basic-dropdown/components/basic-dropdown'}}
+
+<BasicDropdown />
+<SameDropdown />
+```
+
 
 Motivation
 ------------------------------------------------------------------------------
