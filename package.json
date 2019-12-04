@@ -34,7 +34,8 @@
   "dependencies": {
     "broccoli-persistent-filter": "^2.1.1",
     "ember-cli-babel": "^7.1.2",
-    "md5-hex": "^2.0.0"
+    "md5-hex": "^2.0.0",
+    "vscode-uri": "^2.1.1"
   },
   "devDependencies": {
     "@commitlint/cli": "^7.2.1",
@@ -68,12 +69,19 @@
     "semantic-release": "^15.13.2"
   },
   "engines": {
-    "node": "6.* || 8.* || >= 10.*"
+    "node": ">= 10.1 || 11.* || 12.*"
   },
   "ember-addon": {
     "configPath": "tests/dummy/config",
     "before": [
       "ember-cli-htmlbars"
     ]
+  },
+  "ember-language-server": {
+    "entry": "./lib/langserver.js",
+    "version": 1,
+    "capabilities": {
+      "completionProvider": true
+    }
   }
 }

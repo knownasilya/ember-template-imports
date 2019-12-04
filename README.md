@@ -10,6 +10,7 @@ In other words, it's **pods + angle bracket component = goodness**.
 * More concise component invocation while making it explicit where it comes from
 * No hyphens needed!
 * Relative imports!
+* Autocomplete imported components with [Unstable Ember Language Server](unstable-ls)!
 
 Can be used together with
 * [helper imports](https://github.com/patricklx/ember-template-helper-imports)
@@ -73,6 +74,19 @@ import { BasicDropdown as SameDropdown } from 'ember-basic-dropdown/components';
 <SameDropdown />
 ```
 
+Editor Integration
+------------------------------------------------------------------------------
+
+Editor integration currently provides auto completion of imported components.
+
+### VSCode
+
+Currently works with **VSCode** combined with the [Unstable Ember Language Server](unstable-ls).
+
+### (Neo)Vim
+
+Possible by using https://github.com/NullVoxPopuli/coc-ember
+
 
 Motivation
 ------------------------------------------------------------------------------
@@ -109,3 +123,5 @@ License
 ------------------------------------------------------------------------------
 
 This project is licensed under the [MIT License](LICENSE.md).
+
+unstable-ls: https://marketplace.visualstudio.com/items?itemName=lifeart.vscode-ember-unstable
