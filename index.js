@@ -12,14 +12,6 @@ const {
   hasOctaneImports
 } = require('./lib/octane-utils');
 
-let usingStylesImport = false;
-
-try {
-  usingStylesImport = !!require.resolve('ember-template-styles-import');
-} catch(e) {
-  // noop
-}
-
 class TemplateImportProcessor extends BroccoliFilter {
   constructor(inputNode, options = {}) {
     if (!options.hasOwnProperty("persist")) {
@@ -36,6 +28,7 @@ class TemplateImportProcessor extends BroccoliFilter {
 
     this.extensions = ["hbs", "handlebars"];
     this.targetExtension = "hbs";
+    this.transformers = options.transformers;
   }
 
   baseDir() {
@@ -50,12 +43,11 @@ class TemplateImportProcessor extends BroccoliFilter {
     if (hasOctaneImports(contents)) {
       contents = transformOctaneImports(contents, relativePath);
     }
-
     const { imports, rewrittenContents } = transformImports(
       contents,
       relativePath,
       this.options.root,
-      usingStylesImport
+      this.transformers
     );
 
     let header = imports
@@ -81,6 +73,16 @@ module.exports = {
   name: require("./package").name,
 
   setupPreprocessorRegistry(type, registry) {
+    let plugins = this.loadPlugins();
+    let transformers = plugins.reduce((all, plugin) => {
+      let opts = plugin.options;
+      if (opts.extension) {
+        all[opts.extension] = plugin;
+      }
+      return all;
+    }, {});
+    this.project.templateImportTransformers = transformers;
+
     // this is called before init, so, we need to check podModulePrefix later (in toTree)
     let componentsRoot = null;
     const projectConfig = this.project.config();
@@ -105,7 +107,7 @@ module.exports = {
       name: 'ember-template-component-import',
       ext: 'hbs',
       toTree: (tree) => {
-        tree = new TemplateImportProcessor(tree, { root: componentsRoot });
+        tree = new TemplateImportProcessor(tree, { root: componentsRoot, transformers });
         return tree;
       }
     });
@@ -113,5 +115,34 @@ module.exports = {
     if (type === "parent") {
       this.parentRegistry = registry;
     }
+  },
+
+  loadPlugins() {
+    const plugins = Object.keys(this.project.addonPackages).reduce((all, name) => {
+      let addonInfo = this.project.addonPackages[name];
+      let isPlugin = false;
+      try {
+        isPlugin = addonInfo.pkg.keywords.includes('ember-template-imports-addon');
+      } catch(e) {
+        isPlugin = false;
+      }
+      if (isPlugin) {
+        let options = addonInfo.pkg.templateImports;
+
+        if (!options) {
+          return all;
+        }
+
+        all.push({
+          name,
+          path: addonInfo.path,
+          options
+        });
+      }
+      
+      return all;
+    }, []);
+
+    return plugins;
   }
 };
