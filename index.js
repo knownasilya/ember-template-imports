@@ -96,11 +96,6 @@ module.exports = {
       componentsRoot = path.join(this.project.root, podModulePrefix);
     }
 
-    assert.notStrictEqual(
-      podModulePrefix,
-      undefined,
-      `${this.name}: 'podModulePrefix' has not been defined in config/environment.js`
-    );
     registry.add('template', {
       name: 'ember-template-component-import',
       ext: 'hbs',
