@@ -38,6 +38,7 @@
     "vscode-uri": "^2.1.1"
   },
   "devDependencies": {
+    "ember-template-styles-import": "*",
     "@commitlint/cli": "^7.2.1",
     "@commitlint/config-conventional": "^7.1.2",
     "@ember/optional-features": "^0.6.3",
