@@ -1,41 +1,40 @@
-"use strict";
+'use strict';
 
 /* eslint-env node */
 
-const assert = require('assert');
 const path = require('path');
 const BroccoliFilter = require('broccoli-persistent-filter');
 const md5Hex = require('md5-hex');
 const { transformImports, createImportWarning } = require('./lib/utils');
 const {
   transformOctaneImports,
-  hasOctaneImports
+  hasOctaneImports,
 } = require('./lib/octane-utils');
 
 let usingStylesImport = false;
 
 try {
   usingStylesImport = !!require.resolve('ember-template-styles-import');
-} catch(e) {
+} catch (e) {
   // noop
 }
 
 class TemplateImportProcessor extends BroccoliFilter {
   constructor(inputNode, options = {}) {
-    if (!options.hasOwnProperty("persist")) {
+    if (!options.hasOwnProperty('persist')) {
       options.persist = true;
     }
 
     super(inputNode, {
       annotation: options.annotation,
-      persist: options.persist
+      persist: options.persist,
     });
 
     this.options = options;
     this._console = this.options.console || console;
 
-    this.extensions = ["hbs", "handlebars"];
-    this.targetExtension = "hbs";
+    this.extensions = ['hbs', 'handlebars'];
+    this.targetExtension = 'hbs';
   }
 
   baseDir() {
@@ -67,18 +66,18 @@ class TemplateImportProcessor extends BroccoliFilter {
           this._console
         );
         let componentName = `(component '${importPath}')`;
-        
+
         return `${warn}{{#let ${componentName} as |${localName}|}}`;
       })
-      .join("");
-    let footer = imports.map(() => `{{/let}}`).join("");
+      .join('');
+    let footer = imports.map(() => `{{/let}}`).join('');
     let result = header + rewrittenContents + footer;
     return result;
   }
 }
 
 module.exports = {
-  name: require("./package").name,
+  name: require('./package').name,
 
   setupPreprocessorRegistry(type, registry) {
     // this is called before init, so, we need to check podModulePrefix later (in toTree)
@@ -89,7 +88,7 @@ module.exports = {
     // by default `ember g component foo-bar --pod`
     // will create app/components/foo-bar/{component.js,template.hbs}
     // so, we can handle this case and just fallback to 'app/components'
-    
+
     if (podModulePrefix === undefined) {
       componentsRoot = path.join(this.project.root, 'app', 'components');
     } else {
@@ -102,11 +101,11 @@ module.exports = {
       toTree: (tree) => {
         tree = new TemplateImportProcessor(tree, { root: componentsRoot });
         return tree;
-      }
+      },
     });
 
-    if (type === "parent") {
+    if (type === 'parent') {
       this.parentRegistry = registry;
     }
-  }
+  },
 };
