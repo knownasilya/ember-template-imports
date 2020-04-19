@@ -5,23 +5,12 @@
 const path = require('path');
 const BroccoliFilter = require('broccoli-persistent-filter');
 const md5Hex = require('md5-hex');
-const { transformImports, createImportWarning } = require('./lib/utils');
-const {
-  transformOctaneImports,
-  hasOctaneImports,
-} = require('./lib/octane-utils');
-
-let usingStylesImport = false;
-
-try {
-  usingStylesImport = !!require.resolve('ember-template-styles-import');
-} catch (e) {
-  // noop
-}
+const { createImportWarning } = require('./lib/utils');
+const { extractImports, processImports } = require('./lib/extract');
 
 class TemplateImportProcessor extends BroccoliFilter {
   constructor(inputNode, options = {}) {
-    if (!options.hasOwnProperty('persist')) {
+    if (!Object.prototype.hasOwnProperty.call(options, 'persist')) {
       options.persist = true;
     }
 
@@ -46,15 +35,19 @@ class TemplateImportProcessor extends BroccoliFilter {
   }
 
   processString(contents, relativePath) {
-    if (hasOctaneImports(contents)) {
-      contents = transformOctaneImports(contents, relativePath);
+    let { importStatements, contentWithoutImports } = extractImports(
+      contents,
+      relativePath
+    );
+
+    if (!importStatements) {
+      return contents;
     }
 
-    const { imports, rewrittenContents } = transformImports(
-      contents,
+    const imports = processImports(
+      importStatements,
       relativePath,
-      this.options.root,
-      usingStylesImport
+      this.options.root
     );
 
     let header = imports
@@ -71,7 +64,7 @@ class TemplateImportProcessor extends BroccoliFilter {
       })
       .join('');
     let footer = imports.map(() => `{{/let}}`).join('');
-    let result = header + rewrittenContents + footer;
+    let result = header + contentWithoutImports + footer;
     return result;
   }
 }
