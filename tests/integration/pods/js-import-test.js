@@ -8,6 +8,6 @@ module('Integration | Component | js-imports', function(hooks) {
 
   test('it basics', async function(assert) {
     await render(hbs`<JsImports/>`);
-    assert.equal(findAll('button').length, 1);
+    assert.dom('button').exists({ count: 1 });
   });
 });

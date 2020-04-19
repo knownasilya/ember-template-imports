@@ -25,8 +25,8 @@ module('Acceptance | import', function(hooks) {
     assert.equal(Incorrectly_Snake_Cased_Relative_ImportText.includes('dummy/pods/application/template.hbs'), true);
     assert.equal(Incorrectly_Snake_Cased_Relative_ImportText.includes('"Incorrectly_Snake_Cased_Relative_Import"'), true);
 
-    assert.equal(findAll('[data-test-global-warn]').length, 4);
-    assert.equal(findAll('.global-button').length, 3);
-    assert.equal(findAll('.local-button').length, 4);
+    assert.dom('[data-test-global-warn]').exists({ count: 4 });
+    assert.dom('.global-button').exists({ count: 3 });
+    assert.dom('.local-button').exists({ count: 4 });
   });
 });
