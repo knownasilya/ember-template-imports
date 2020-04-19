@@ -1,5 +1,7 @@
-ember-template-component-import
+ember-template-imports
 ==============================================================================
+
+[![Build Status](https://travis-ci.com/knownasilya/ember-template-component-import.svg?branch=master)](https://travis-ci.com/knownasilya/ember-template-component-import)
 
 This addon allows you to use import-style syntax to create local bindings to
 a component within a template file.
