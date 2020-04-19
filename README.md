@@ -16,6 +16,12 @@ Can be used together with
 - [helper imports](https://github.com/patricklx/ember-template-helper-imports)
 - [styles import](https://github.com/davewasmer/ember-template-styles-import)
 
+## Compatibility
+
+- Ember.js v3.12 or above
+- Ember CLI v2.13 or above
+- Node.js v10 or above
+
 ## Installation
 
 ```sh
@@ -109,6 +115,10 @@ that this addon provides. The goal of this addon is to get people to try it and 
 
 But be warned - this addon is not official and when an official solution does exist, it might be different.
 So weigh the pros and cons carefully before widely adopting this addon.
+
+## Contributing
+
+See the [Contributing](CONTRIBUTING.md) guide for details.
 
 ## License
 
