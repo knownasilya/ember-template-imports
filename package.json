@@ -1,13 +1,16 @@
 {
-  "name": "ember-template-component-import",
+  "name": "ember-template-imports",
   "version": "0.1.0",
-  "description": "The default blueprint for ember-cli addons.",
+  "description": "Template imports for Ember Components",
   "keywords": [
-    "ember-addon"
+    "ember-addon",
+    "template imports",
+    "frontmatter",
+    "build"
   ],
-  "repository": "",
+  "repository": "https://github.com/knownasilya/ember-template-imports",
   "license": "MIT",
-  "author": "",
+  "author": "Ilya Radchenko",
   "directories": {
     "doc": "doc",
     "test": "tests"
