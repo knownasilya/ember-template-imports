@@ -5,8 +5,8 @@
 const path = require('path');
 const BroccoliFilter = require('broccoli-persistent-filter');
 const md5Hex = require('md5-hex');
-const { createImportWarning } = require('./lib/utils');
-const { extractImports, processImports } = require('./lib/extract');
+const { extractImports, processImports } = require('./lib/extract-imports');
+const { rewriteTemplate } = require('./lib/rewrite-template');
 
 class TemplateImportProcessor extends BroccoliFilter {
   constructor(inputNode, options = {}) {
@@ -44,27 +44,12 @@ class TemplateImportProcessor extends BroccoliFilter {
       return contents;
     }
 
-    const imports = processImports(
-      importStatements,
-      relativePath,
-      this.options.root
-    );
-
-    let header = imports
-      .map(({ importPath, localName, isLocalNameValid }) => {
-        const warn = createImportWarning(
-          relativePath,
-          localName,
-          isLocalNameValid,
-          this._console
-        );
-        let componentName = `(component '${importPath}')`;
-
-        return `${warn}{{#let ${componentName} as |${localName}|}}`;
-      })
-      .join('');
-    let footer = imports.map(() => `{{/let}}`).join('');
-    let result = header + contentWithoutImports + footer;
+    const imports = processImports(importStatements);
+    const result = rewriteTemplate({
+      templatePath: relativePath,
+      templateContents: contentWithoutImports,
+      imports,
+    });
     return result;
   }
 }
@@ -92,7 +77,13 @@ module.exports = {
       name: 'ember-template-component-import',
       ext: 'hbs',
       toTree: (tree) => {
-        tree = new TemplateImportProcessor(tree, { root: componentsRoot });
+        tree = new TemplateImportProcessor(tree, {
+          root: componentsRoot,
+          projectDir: this.project.root,
+          projectName: this.project.pkg.name,
+          podModulePrefix,
+          addons: this.project.addonPackages,
+        });
         return tree;
       },
     });
