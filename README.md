@@ -3,12 +3,16 @@
 This addon allows you to use import-style syntax to create local bindings to
 a component within a template file.
 
-In other words, it's **pods + angle bracket component = goodness**.
+```hbs
+---
+import { Button } from '@frontile/buttons';
+---
 
-- Use pods and angle bracket components together
+<Button @appearance="minimal">I'm a button!</Button>
+```
+
 - More concise component invocation while making it explicit where it comes from
-- No hyphens needed!
-- Relative imports!
+- Relative imports (most useful with pods)!
 - Autocomplete imported components with [Unstable Ember Language Server](unstable-ls)!
 
 Can be used together with
