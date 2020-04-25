@@ -6,6 +6,7 @@ const path = require('path');
 const BroccoliFilter = require('broccoli-persistent-filter');
 const md5Hex = require('md5-hex');
 const { extractImports, processImports } = require('./lib/extract-imports');
+const { validateImports } = require('./lib/validate-imports');
 const { rewriteTemplate } = require('./lib/rewrite-template');
 
 class TemplateImportProcessor extends BroccoliFilter {
@@ -44,11 +45,20 @@ class TemplateImportProcessor extends BroccoliFilter {
       return contents;
     }
 
+    debugger;
     const imports = processImports(importStatements);
+
+    const validatedImports = validateImports({
+      imports,
+      addons: this.options.addons,
+      projectName: this.options.projectName,
+      projectDir: this.options.projectDir,
+      templatePath: relativePath,
+    });
     const result = rewriteTemplate({
       templatePath: relativePath,
       templateContents: contentWithoutImports,
-      imports,
+      imports: validatedImports,
     });
     return result;
   }
@@ -78,7 +88,6 @@ module.exports = {
       ext: 'hbs',
       toTree: (tree) => {
         tree = new TemplateImportProcessor(tree, {
-          root: componentsRoot,
           projectDir: this.project.root,
           projectName: this.project.pkg.name,
           podModulePrefix,
